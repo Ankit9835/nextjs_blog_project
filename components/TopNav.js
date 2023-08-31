@@ -10,7 +10,7 @@ export default function TopNav() {
             </Link>
             {status === 'authenticated' ? <div className="d-flex">
                 <Link className="nav-link" href="/dashboard">
-                    Dashboard
+                    {data?.user?.name}
                 </Link>
                 <a className="nav-link pointer" onClick={() => signOut({ callbackUrl: "/login" })}>
                     Logout
