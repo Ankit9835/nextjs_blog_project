@@ -1,44 +1,28 @@
-import queryString from "query-string";
-import Link from "next/link";
-import { NextResponse } from "next/server";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import ListBlog from "@/components/blog/ListBlog";
 
+dayjs.extend(relativeTime);
 
-async function getBlogs(searchParams) {
-  const urlParams = {
-    page: searchParams.page || 1,
-  };
-
-  const searchQuery = new URLSearchParams(urlParams).toString();
-
-  const response = await fetch(`${process.env.API}/blog?${searchQuery}`, {
+async function getBlog(slug) {
+  const response = await fetch(`${process.env.API}/blog/${slug}`, {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
     next: { revalidate: 1 },
   });
 
   console.log("response", response);
-  if (!response.ok) {
-    throw new Error("Failed To fetch");
-  }
-
-  const data = response.json();
+  const data = await response.json();
   return data;
 }
 
-export default async function Home({ searchParams = { page: "1" } }) {
-  const data = await getBlogs(searchParams);
-  const { currentPage, totalPages, blogs } = data;
-
-  const hasPreviousPage = currentPage > 1;
-  const hasNextPage = currentPage < totalPages;
-
+export default async function BlogViewpage({ params }) {
+    
+  const blogs = await getBlog(params.slug);
   return (
     <main>
-      <p className="text-center lead fw-bold">Blogs {blogs?.length}</p>
+      <p className="text-center lead fw-bold">Blogs</p>
       <ListBlog blogs={blogs} />
+      {/* <pre>{JSON.stringify(blogs, null, 4)}</pre> */}
       <div className="d-flex justify-content-center">
         <nav aria-label="Page navigation">
           <ul className="pagination">
@@ -46,7 +30,8 @@ export default async function Home({ searchParams = { page: "1" } }) {
               <li className="page-item">
                 <Link
                   className="page-link px-3"
-                  href={`?page=${currentPage - 1}`}
+                  href={`/?page=${currentPage - 1}`}
+                  as={`/?page=${currentPage - 1}`}
                 >
                   Previous
                 </Link>
@@ -61,7 +46,13 @@ export default async function Home({ searchParams = { page: "1" } }) {
                     currentPage === page ? " active" : ""
                   }`}
                 >
-                  <Link className="page-link" href={`?page=${page}`}>
+                  <Link
+                    className="page-link"
+                    href={`/?page=${page}`}
+                    // use 'as' to avoid interpreting it as a separate
+                    route
+                    as={`/?page=${page}`}
+                  >
                     {page}
                   </Link>
                 </li>
@@ -71,7 +62,8 @@ export default async function Home({ searchParams = { page: "1" } }) {
               <li className="page-item">
                 <Link
                   className="page-link px-3"
-                  href={`?page=${currentPage + 1}`}
+                  href={`/?page=${currentPage + 1}`}
+                  as={`/?page=${currentPage + 1}`}
                 >
                   Next
                 </Link>
