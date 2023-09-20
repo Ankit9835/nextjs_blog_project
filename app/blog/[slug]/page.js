@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import ListBlog from "@/components/blog/ListBlog";
+import Link from "next/link";
 
 dayjs.extend(relativeTime);
 
@@ -17,61 +18,39 @@ async function getBlog(slug) {
 
 export default async function BlogViewpage({ params }) {
     
-  const blogs = await getBlog(params.slug);
+  const blog = await getBlog(params.slug);
   return (
-    <main>
-      <p className="text-center lead fw-bold">Blogs</p>
-      <ListBlog blogs={blogs} />
-      {/* <pre>{JSON.stringify(blogs, null, 4)}</pre> */}
-      <div className="d-flex justify-content-center">
-        <nav aria-label="Page navigation">
-          <ul className="pagination">
-            {hasPreviousPage && (
-              <li className="page-item">
-                <Link
-                  className="page-link px-3"
-                  href={`/?page=${currentPage - 1}`}
-                  as={`/?page=${currentPage - 1}`}
-                >
-                  Previous
-                </Link>
-              </li>
-            )}
-            {Array.from({ length: totalPages }, (_, index) => {
-              const page = index + 1;
-              return (
-                <li
-                  key={page}
-                  className={`page-item${
-                    currentPage === page ? " active" : ""
-                  }`}
-                >
-                  <Link
-                    className="page-link"
-                    href={`/?page=${page}`}
-                    // use 'as' to avoid interpreting it as a separate
-                    route
-                    as={`/?page=${page}`}
-                  >
-                    {page}
-                  </Link>
-                </li>
-              );
-            })}
-            {hasNextPage && (
-              <li className="page-item">
-                <Link
-                  className="page-link px-3"
-                  href={`/?page=${currentPage + 1}`}
-                  as={`/?page=${currentPage + 1}`}
-                >
-                  Next
-                </Link>
-              </li>
-            )}
-          </ul>
-        </nav>
+    <div className="card mb-4">
+      <div style={{ height: "200px", overflow: "hidden" }}>
+        <img
+          src={blog?.image || "/images/default.jpg"}
+          className="card-img-top"
+          style={{ objectFit: "cover", height: "100%", width: "100%" }}
+          alt={blog.title}
+        />
       </div>
-    </main>
+      <div className="card-body">
+        <h5 className="card-title">
+          <Link href={`/blog/${blog.slug}`}>{blog.title}</Link>
+        </h5>
+        <div className="card-text">
+          <div>
+           {blog.content}
+          </div>
+        </div>
+      </div>
+      <div className="card-footer d-flex justify-content-between">
+        <small className="text-muted">Category: {blog.category}</small>
+        <small className="text-muted">
+          Author: {blog.postedBy?.name || "Admin"}
+        </small>
+      </div>
+      <div className="card-footer d-flex justify-content-between">
+        <small>💓{blog?.likes?.length} likes</small>
+        <small className="text-muted">
+          Posted {dayjs(blog.updatedAt).fromNow()}
+        </small>
+      </div>
+    </div>
   );
 }
