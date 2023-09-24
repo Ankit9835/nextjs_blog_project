@@ -2,6 +2,7 @@
 import Link from "next/link";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import BlogLike from "./BlogLike";
 
 dayjs.extend(relativeTime);
 
@@ -40,7 +41,9 @@ export default function BlogCard({ blog }) {
         </small>
       </div>
       <div className="card-footer d-flex justify-content-between">
-        <small>💓{blog?.likes?.length} likes</small>
+        
+        {/* <small>💓{blog?.likes?.length} likes</small> */}
+        <BlogLike blog={blog} />
         <small className="text-muted">
           Posted {dayjs(blog.updatedAt).fromNow()}
         </small>

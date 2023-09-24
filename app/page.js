@@ -2,6 +2,7 @@ import queryString from "query-string";
 import Link from "next/link";
 import { NextResponse } from "next/server";
 import ListBlog from "@/components/blog/ListBlog";
+import BlogLike from "@/components/blog/BlogLike";
 
 
 async function getBlogs(searchParams) {
@@ -19,7 +20,7 @@ async function getBlogs(searchParams) {
     next: { revalidate: 1 },
   });
 
-  console.log("response", response);
+  //console.log("response", response);
   if (!response.ok) {
     throw new Error("Failed To fetch");
   }
