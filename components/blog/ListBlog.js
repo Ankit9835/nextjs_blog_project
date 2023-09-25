@@ -6,7 +6,7 @@ export default function ListBlog({blogs}){
       <div className="container mb-5">
         <div className="row g-4">
           {blogs?.map((blog) => (
-            <div className="col-lg-4" key={blog.id}>
+            <div className="col-lg-4" key={blog._id}>
               <BlogCard blog={blog} />
             </div>
           ))}
