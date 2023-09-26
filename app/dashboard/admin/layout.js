@@ -11,6 +11,9 @@ export default function AdminLayout({children}) {
         <Link className="nav-link" href="/dashboard/admin/blog/create">
         Create Blog
         </Link>
+        <Link className="nav-link" href="/dashboard/admin/blog/list">
+        Admin Blog List
+        </Link>
         </nav>
         {children}
         </>
