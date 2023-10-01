@@ -45,7 +45,7 @@ export default async function Home({ searchParams = { page: "1" } }) {
             <p>
                 {blog.title}
             </p>
-            <Link className="text-danger" href={`dashboard/admin/update/${blog.slug}`}>
+            <Link className="text-danger" href={`dashboard/admin/blog/update/${blog.slug}`}>
                 Update
             </Link>
         </div>
