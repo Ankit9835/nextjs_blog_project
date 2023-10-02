@@ -36,9 +36,10 @@ export async function DELETE(req, context){
     await dbConnect()
     console.log('id', context.params)
     try {
-        const blog = Blog.findByIdAndDelete(context.params.id)
+        const blog = await Blog.findByIdAndDelete(context.params.id)
+        console.log('blof',blog)
         if(!blog){
-            return resizeBy.status(404).json({
+            return res.status(404).json({
                 error: 'Blog not found'
             })
         }  

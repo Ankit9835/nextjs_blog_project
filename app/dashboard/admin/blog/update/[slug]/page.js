@@ -17,15 +17,9 @@ export default function AdminBlogUpdate({ params }) {
 
   const router = useRouter();
 
- 
-
- 
-
   useEffect(() => {
     getBlog();
   }, [params]);
-
- 
 
   const getBlog = async () => {
     try {
@@ -54,27 +48,57 @@ export default function AdminBlogUpdate({ params }) {
 
   const updateBlog = async (e) => {
     try {
-        console.log('ids', id)
-      const response = await fetch(
-        `${process.env.API}/admin/blog/${id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            title,
-            content,
-            category,
-            image,
-          }),
-        }
-      );
-      if(!response.ok){
-        throw new Error('Failed to update a blog')
+      console.log("ids", id);
+      const response = await fetch(`${process.env.API}/admin/blog/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          content,
+          category,
+          image,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update a blog");
       }
       window.location.href = "/dashboard/admin/blog/list";
       toast.success("Blog updated successfully");
+    } catch (error) {
+      console.log(error);
+      return NextResponse.json(
+        {
+          err: "something went wrong",
+        },
+        {
+          status: 500,
+        }
+      );
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`${process.env.API}/admin/blog/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          content,
+          category,
+          image,
+        }),
+      });
+      console.log("response", response);
+      if (!response.ok) {
+        throw new Error("blog not deleted");
+      }
+      window.location.href = "/dashboard/admin/blog/list";
+      toast.success("Blog deleted successfully");
     } catch (error) {
       console.log(error);
       return NextResponse.json(
@@ -155,11 +179,17 @@ export default function AdminBlogUpdate({ params }) {
                 onChange={uploadImage}
               />
             </button>
-            <button
-              className="btn bg-primary text-light"
-              onClick={updateBlog}
-            >
+            <button className="btn bg-primary text-light" onClick={updateBlog}>
               Save
+            </button>
+          </div>
+          <div className="d-flex justify-content-end mt-5">
+            <button
+              diasabled={loading}
+              onClick={handleDelete}
+              className="btn btn-sm btn-outline-danger"
+            >
+              Delete
             </button>
           </div>
         </div>
